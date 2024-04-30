@@ -74,6 +74,6 @@ function Player:getMetadata(key)
 end
 
 function Player:getCharInfo(key)
-if not key then return self.private.charinfo end
+    if not key then return self.private.charinfo end
     return self.private.charinfo[key]
 end
