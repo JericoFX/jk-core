@@ -20,6 +20,7 @@ function Player:constructor(license,source,newData)
     self.source = source
     self.private.metadata = nil
     self.private.charinfo = nil
+    self.private.inventory = nil
     self.player = GetPlayerPed(self.source)
     self.location = nil
     self.data = {}
@@ -33,6 +34,7 @@ function Player:login()
     self.name = data.name
     self.private.metadata = json.decode(data.metadata)
     self.private.charinfo = json.decode(data.charinfo)
+    self.private.inventory = json.decode(data.inventory)
     self.location = json.decode(data.charinfo)
     return true
    else
@@ -101,3 +103,5 @@ function Player:triggerEvent(eventName, targetIds, ...)
 
     TriggerClientEventInternal(eventName, targetIds --[[@as string]], payload, payloadLen)
 end
+
+return Player
