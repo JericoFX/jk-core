@@ -20,6 +20,7 @@ function Player:constructor(license,source,newData)
     self.source = source
     self.private.metadata = nil
     self.private.charinfo = nil
+    self.player = GetPlayerPed(self.source)
     self.location = nil
     self.data = {}
     self.newData = newData or nil
@@ -41,22 +42,23 @@ end
 
 function Player:createNewCharacter()
     self.private.charinfo = {
-        firstname = self.newData.firstname
-        lastname = self.newData.lastname
-        date = self.newData.date
-        id = self.newData.id
+        firstname = self.newData.firstname,
+        lastname = self.newData.lastname,
+        fullname = ("%s %s"):format(self.newdata.firstname,self.newData.lastname),
+        date = self.newData.date,
+        id = self.newData.id,
     }
     Wait(10)
     self.private.metadata = {
-        hunger = 100
-        thirst = 100
-        stress = 0
-        isdead = false
-        inlaststand = false
-        armor = 0
-        ishandcuffed = false
-        mission = {}
-        group = {}
+        hunger = 100,
+        thirst = 100,
+        stress = 0,
+        isdead = false,
+        inlaststand = false,
+        armor = 0,
+        ishandcuffed = false,
+        mission = {},
+        group = {},
         effect = self.newData.effect
     }
     self.location = vector4(0,0,73,180)
@@ -74,13 +76,28 @@ function Player:getMetadata(key)
     return self.private.metadata[key]
 end
 
-function Player:getCharInfo(key)
+function Player:getCharinfo(key)
     if not key then return self.private.charinfo end
     return self.private.charinfo[key]
 end
 
-function Player:setMetadata(keu,value)
+function Player:setMetadata(key,value)
     if not self.private.metadata[key] then self:updateMetadata(key,value) end
     self.private.metadata[key] = value
     return true
+end
+
+function Player:triggerEvent(eventName, targetIds, ...)
+    local payload = msgpack.pack_args(...)
+    local payloadLen = #payload
+
+    if lib.array.isArray(targetIds) then
+        for i = 1, #targetIds do
+            TriggerClientEventInternal(eventName, targetIds[i] --[[@as string]], payload, payloadLen)
+        end
+
+        return
+    end
+
+    TriggerClientEventInternal(eventName, targetIds --[[@as string]], payload, payloadLen)
 end
