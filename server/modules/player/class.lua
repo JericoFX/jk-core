@@ -26,7 +26,7 @@ function Player:constructor(license,source,newData)
     return self
 end
 
-function Player:getInformation()
+function Player:login()
    self.data =  db.getPlayerInformation(self.license)
    if self.data then
     self.name = data.name
@@ -59,10 +59,11 @@ function Player:createNewCharacter()
         group = {}
         effect = self.newData.effect
     }
+    self.location = vector4(0,0,73,180)
     return true
 end
 
-function Player:setMetadata(key,value)
+function Player:updateMetadata(key,value)
     if not self.private.metadata[key] then return end
      self.private.metadata[key] = value
     return true
@@ -76,4 +77,10 @@ end
 function Player:getCharInfo(key)
     if not key then return self.private.charinfo end
     return self.private.charinfo[key]
+end
+
+function Player:setMetadata(keu,value)
+    if not self.private.metadata[key] then self:updateMetadata(key,value) end
+    self.private.metadata[key] = value
+    return true
 end
