@@ -27,7 +27,21 @@ function Vehicle:Spawn()
     local wait = lib.waitFor(function()
         return DoesEntityExist(self.vehicle)
     end,("Error loading model: %s"):format(self.model),2000)
-
+    if self.customPlate then
+        SetVehicleNumberPlateText(self.vehicle, self.customPlate)
+    local plate = lib.waitFor(function() 
+        SetVehicleNumberPlateText(self.vehicle, self.customPlate)
+        return GetVehicleNumberPlateIndex(self.vehicle) == self.customPlate
+    end,("Error setting plate: %s"):format(self.customPlate),2000)
+    end
     
+self:set()
+end
 
+function Vehicle:set()
+    Entity(self.vehicle).state:set("init",true,true)
+end
+function Vehicle:get(key)
+if not key then return Entity(self.vehicle) end
+	return Entity(self.vehicle).state[key]
 end
