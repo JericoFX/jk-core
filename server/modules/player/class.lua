@@ -32,6 +32,7 @@ function Player:login()
    self.data =  db.getPlayerInformation(self.license)
    if self.data then
     self.name = data.name
+    self.id = data.id
     self.private.metadata = json.decode(data.metadata)
     self.private.charinfo = json.decode(data.charinfo)
     self.private.inventory = json.decode(data.inventory)
@@ -48,7 +49,7 @@ function Player:createNewCharacter()
         lastname = self.newData.lastname,
         fullname = ("%s %s"):format(self.newdata.firstname,self.newData.lastname),
         date = self.newData.date,
-        id = self.newData.id,
+        id = ("%s%s%s"):format(lib.string.random("A",2),lib.string.random("a",3),lib.string.random("1",3)),
     }
     Wait(10)
     self.private.metadata = {
@@ -89,10 +90,10 @@ function Player:setMetadata(key,value)
     return true
 end
 
+--https://github.com/overextended/ox_lib/blob/master/imports/triggerClientEvent/server.lua
 function Player:triggerEvent(eventName, targetIds, ...)
     local payload = msgpack.pack_args(...)
     local payloadLen = #payload
-
     if lib.array.isArray(targetIds) then
         for i = 1, #targetIds do
             TriggerClientEventInternal(eventName, targetIds[i] --[[@as string]], payload, payloadLen)
@@ -100,8 +101,11 @@ function Player:triggerEvent(eventName, targetIds, ...)
 
         return
     end
-
     TriggerClientEventInternal(eventName, targetIds --[[@as string]], payload, payloadLen)
+end
+
+function Player:savePlayer()
+    -- Function to save the player information
 end
 
 return Player
